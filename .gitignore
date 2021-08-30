@@ -1,0 +1,6 @@
+static/
+build/
+data/
+
+**/__pycache__
+**/_venv
