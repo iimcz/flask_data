@@ -8,5 +8,5 @@ setuptools.setup(
     author='Ondřej Slabý',
     author_email='slaby@iim.cz',
     packages=setuptools.find_packages(exclude='examples'),
-    install_requirements=['flask', 'flask_sock', 'matplotlib', 'numpy']
+    install_requires=['flask', 'flask_sock', 'matplotlib', 'numpy']
 )
