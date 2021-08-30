@@ -2,5 +2,7 @@ static/
 build/
 data/
 
+*.egg-info/
+
 **/__pycache__
 **/_venv
