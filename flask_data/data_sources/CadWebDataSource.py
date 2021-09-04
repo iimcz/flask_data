@@ -49,7 +49,6 @@ class CadWebDataSource(TimeSourceBase):
             'v-wn': '759'
         }
         init_url = self.tab + '?v-{}'.format(curdate)
-
         init_post = self.s.post(init_url, init_message)
         init_resp = json.loads(init_post.text)
         init_uidl = json.loads(init_resp['uidl'])

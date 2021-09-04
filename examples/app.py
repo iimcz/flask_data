@@ -11,7 +11,7 @@ from flask_data.data_sources import CadWebDataSource
 
 STATIC_URL = '/static/'
 STATIC_FOLDER = './static'
-CSV_FOLDER = './csv'
+CSV_FOLDER = './data'
 
 app = Flask(__name__, static_url_path=STATIC_URL, static_folder=STATIC_FOLDER)
 sock = Sock(app)

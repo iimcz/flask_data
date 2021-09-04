@@ -30,8 +30,8 @@ class DataSeriesBrowser(HandlerBase):
     def get(self, start, count):
         a = int(start)
         b = a + int(count)
-        data = [str(x) for x in self.datasource[a:b]]
-        self.ws.send('data,' + ','.join(data))
+        data = np.array(self.datasource[a:b]).flatten()
+        return data.tolist()
 
     def getrange(self, xstart, xend):
         if not self.datasource.ndim >= 2:
@@ -40,42 +40,40 @@ class DataSeriesBrowser(HandlerBase):
         end = int(xend)
         data = np.array(
             [x for x in self.datasource if start <= x[0] <= end]).flatten()
-        data = [str(x) for x in data]
-        self.ws.send('data,' + ','.join(data))
+        return data.tolist()
 
     def getxy(self, x, y):
         if not self.datasource.ndim == 2:
             raise IndexError
-        self.ws.send('data,' + str(self.datasource[int(x), int(y)]))
+        return self.datasource[int(x), int(y)]
 
     def getxyz(self, x, y, z):
         if not self.datasource.ndim == 3:
             raise IndexError
-        self.ws.send('data,' + str(self.datasource[int(x), int(y), int(z)]))
+        return self.datasource[int(x), int(y), int(z)]
 
     def length(self):
-        self.ws.send('data,' + str(len(self.datasource)))
-
-    def dims(self):
-        self.ws.send('data,' + str(self.datasource.ndim))
+        return len(self.datasource)
 
     def shape(self):
-        shape = [str(x) for x in self.datasource.shape]
-        self.ws.send('data,' + ','.join(shape))
+        return list(self.datasource.shape)
 
-    def toimg(self):
+    def dims(self):
+        return self.datasource.ndim
+
+    def toimg(self, cmap):
         if self.datasource.ndim == 1:
             data = np.array([[x] for x in self.datasource])
         else:
             data = self.datasource
         filename = str(uuid1()) + '.png'
-        imsave(join(self.static_folder, filename), data, cmap='gray')
-        self.ws.send('link,' + self.static_base_url + filename)
+        imsave(join(self.static_folder, filename), data, cmap=cmap)
+        return f'link,{self.static_base_url + filename}'
 
-    def toimglimited(self, start, count):
+    def toimglimited(self, start, count, cmap):
         filename = str(uuid1()) + '.png'
         a = int(start)
         b = int(count)
         data = self.datasource[a:b]
-        imsave(join(self.static_folder, filename), data, cmap='gray')
-        self.ws.send('link,' + self.static_base_url + filename)
+        imsave(join(self.static_folder, filename), data, cmap=cmap)
+        return f'link,{self.static_base_url + filename}'

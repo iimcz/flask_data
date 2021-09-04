@@ -50,7 +50,7 @@ class TimeSeriesBrowser(HandlerBase):
             data = ','.join([str(x) for x in datapoint])
         else:
             data = str(datapoint)
-        self.ws.send('data,' + data)
+        self.ws.send('data,time,' + data)
 
     def toimg(self):
         data = np.array(self.cache)
@@ -59,5 +59,4 @@ class TimeSeriesBrowser(HandlerBase):
             data = np.array([[x] for x in data])
         filename = str(uuid1()) + '.png'
         imsave(join(self.static_folder, filename), data, cmap='gray')
-        self.ws.send('link,' + self.static_base_url + filename)
-        pass
+        return f'link,{self.static_base_url + filename}'
