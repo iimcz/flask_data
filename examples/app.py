@@ -16,7 +16,7 @@ STATIC_URL = '/static/'
 STATIC_FOLDER = './static'
 CSV_FOLDER = './data'
 
-app = Flask(__name__, static_url_path=STATIC_URL, static_folder=STATIC_FOLDER)
+app = Flask(__name__)
 sock = Sock(app)
 
 
