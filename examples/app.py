@@ -1,8 +1,11 @@
+from flask_data.data_sources.TimeSourceBase import TimeSourceBase
+from flask_data.socket_handlers.HandlerBase import HandlerBase
 from flask import Flask, request
 from flask_sock import Sock, Server
 from random import random
 from time import sleep
 from os.path import join
+from math import sin
 
 import csv
 
@@ -17,11 +20,10 @@ app = Flask(__name__, static_url_path=STATIC_URL, static_folder=STATIC_FOLDER)
 sock = Sock(app)
 
 
-@sock.route('/random')
-def ws_random(ws: Server):
-    while ws.connected:
-        ws.send(str(random()))
-        sleep(1)
+@sock.route('/sine')
+def ws_sin(ws: Server):
+    DataSeriesBrowser(ws, [sin(x * 0.01)
+                      for x in range(1000)], STATIC_FOLDER, STATIC_URL)
 
 
 @sock.route('/csv/<filename>')
@@ -38,6 +40,19 @@ def ws_csv(ws: Server, filename):
 def ws_cadweb(ws: Server):
     TimeSeriesBrowser(ws, CadWebDataSource(
         2, ['Yellow Intensity', 'Blue Intensity']))
+
+
+class RandomSource(TimeSourceBase):
+    def __init__(self) -> None:
+        super().__init__()
+
+    def poll(self):
+        return random()
+
+
+@sock.route('/random')
+def ws_random(ws: Server):
+    TimeSeriesBrowser(ws, RandomSource())
 
 
 if __name__ == '__main__':
