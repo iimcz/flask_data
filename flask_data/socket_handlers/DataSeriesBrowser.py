@@ -1,11 +1,6 @@
-import uuid
-
-from werkzeug import datastructures
 from .HandlerBase import HandlerBase
 from uuid import uuid1
-from flask import Flask
 from flask_sock import Server
-from threading import Thread
 from uuid import uuid1
 from matplotlib.pyplot import imsave
 from pathlib import Path
@@ -27,13 +22,17 @@ class DataSeriesBrowser(HandlerBase):
 
         self.receive_loop()
 
+    def getall(self):
+        data = np.array(self.datasource).flatten()
+        return data.tolist()
+
     def get(self, start, count):
         a = int(start)
         b = a + int(count)
         data = np.array(self.datasource[a:b]).flatten()
         return data.tolist()
 
-    def getrange(self, xstart, xend):
+    def getxrange(self, xstart, xend):
         if not self.datasource.ndim >= 2:
             raise IndexError
         start = int(xstart)
